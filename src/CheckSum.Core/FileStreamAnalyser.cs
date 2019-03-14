@@ -37,8 +37,7 @@ namespace CheckSum.Core
                 fileResult = new FileResultSuccess
                 {
                     CheckSum = checkSum,
-                    FileName = fileInfo.FullName,
-                    Status = FileAnalyzeStatus.Success
+                    FileName = fileInfo.FullName
                 };
             }
             catch (IOException)
@@ -46,8 +45,7 @@ namespace CheckSum.Core
                 fileResult = new FileResultError
                 {
                     ErrorMessage = "Ошибка ввода вывода",
-                    FileName = fileInfo.FullName,
-                    Status=FileAnalyzeStatus.Error
+                    FileName = fileInfo.FullName
                 };
             }
             catch (UnauthorizedAccessException)
@@ -55,8 +53,7 @@ namespace CheckSum.Core
                 fileResult = new FileResultError
                 {
                     ErrorMessage = "Ошибка доступа к файлу",
-                    FileName = fileInfo.FullName,
-                    Status = FileAnalyzeStatus.Error
+                    FileName = fileInfo.FullName
                 };
             }
             catch
@@ -64,8 +61,7 @@ namespace CheckSum.Core
                 fileResult = new FileResultError
                 {
                     ErrorMessage = "Ошибка чтения потока",
-                    FileName = fileInfo.FullName,
-                    Status = FileAnalyzeStatus.Error
+                    FileName = fileInfo.FullName
                 };
             }
 

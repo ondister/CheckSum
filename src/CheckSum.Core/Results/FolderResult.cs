@@ -22,7 +22,7 @@ namespace CheckSum.Core.Results
         ///     Cохраняет результат по указанному пути
         /// </summary>
         /// <param name="fileName">Полный путь для сохранения файла</param>
-        internal void Save(string fileName)
+        public void Save(string fileName)
         {
             var formatter = new XmlSerializer(typeof(FolderResult));
 
@@ -30,6 +30,24 @@ namespace CheckSum.Core.Results
             {
                 formatter.Serialize(fileStream, this);
             }
+        }
+
+        /// <summary>
+        ///     Открывает результат из указанного пути.
+        /// </summary>
+        /// <param name="fileName">Путь к файлу</param>
+        /// <returns></returns>
+        public static FolderResult Open(string fileName)
+        {
+            FolderResult folderResult = null;
+            var formatter = new XmlSerializer(typeof(FolderResult));
+            using (var fileStream = new FileStream(fileName, FileMode.Open))
+            {
+                var resultObject = formatter.Deserialize(fileStream);
+                folderResult = resultObject as FolderResult;
+            }
+
+            return folderResult;
         }
     }
 }

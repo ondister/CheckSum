@@ -16,5 +16,10 @@ namespace CheckSum.Core.Results
         {
             return $"File:{FileName}, bytes sum: {CheckSum}";
         }
+
+        public FileResultSuccess()
+        {
+            Status = FileAnalyzeStatus.Success;
+        }
     }
 }
