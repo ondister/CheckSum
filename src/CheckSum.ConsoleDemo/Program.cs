@@ -1,38 +1,63 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 using CheckSum.Core;
 using CheckSum.Core.Results;
 
 namespace CheckSum.ConsoleDemo
 {
-    class Program
+    internal class Program
     {
-        private const string existFolderPath = @"..\..\TestFiles";
-#warning не забыть сделать передачу аргументов из коммандной строки
-        static void Main(string[] args)
+        private const string testFolderPath = @"..\..\TestFiles";
+
+        private static void Main(string[] args)
         {
-          var checkSumFolder= new FolderCheckSum(existFolderPath);
-            checkSumFolder.Analized += delegate
+            var folderPath = GetfolderPath(args);
+            try
             {
-                Console.WriteLine("Анализ папки завершен");
-            };
-            var progress = new Progress<FileResult>();
-            progress.ProgressChanged += Progress_ProgressChanged1;
-            checkSumFolder.AnalizeAsync(progress).Wait();
+                var checkSumFolder = new FolderCheckSum(folderPath);
 
-           Console.ReadKey();
+                //end of analysis event
+                checkSumFolder.Analized += CheckSumFolder_Analized;
+
+                //progress of analysis event
+                var progress = new Progress<FileResult>();
+                progress.ProgressChanged += Progress_ProgressChanged;
+
+                checkSumFolder.AnalizeAsync(progress).Wait();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+            }
         }
 
-        private static void Progress_ProgressChanged1(object sender, FileResult e)
+        private static void CheckSumFolder_Analized(object sender, string e)
         {
-            Console.WriteLine($"Файл:{e.FileName}, сумма байт: {e.CheckSum}");
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine($"Folder {e} analysis completed");
+            Console.ReadKey();
         }
 
+
+        private static void Progress_ProgressChanged(object sender, FileResult e)
+        {
+            Console.WriteLine(e.GetStringResult());
+        }
+
+        private static string GetfolderPath(IReadOnlyList<string> args)
+        {
+            var folderPath = testFolderPath;
+            if (args.Count != 1)
+            {
+                Console.WriteLine(
+                    $"You did not specify the path to the folder in the program arguments. The default path will be used: {testFolderPath}");
+            }
+            else
+            {
+                folderPath = args[0];
+            }
+
+            return folderPath;
+        }
     }
 }

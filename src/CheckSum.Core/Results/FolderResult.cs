@@ -22,7 +22,7 @@ namespace CheckSum.Core.Results
         {
             var formatter = new XmlSerializer(typeof(FolderResult));
 
-            using (var fileStream = new FileStream(path, FileMode.OpenOrCreate))
+            using (var fileStream = new FileStream(path, FileMode.Create))
             {
                 formatter.Serialize(fileStream, this);
             }

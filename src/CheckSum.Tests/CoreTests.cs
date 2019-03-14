@@ -33,6 +33,10 @@ namespace CheckSum.Tests
             await folderCheckSum.AnalizeAsync(progress);
         }
 
-       
+        [TestMethod]
+        public async Task FolderResultSerializationTest()
+        {
+         
+        }
     }
 }

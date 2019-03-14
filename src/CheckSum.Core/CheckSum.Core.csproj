@@ -33,6 +33,7 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -44,7 +45,10 @@
     <Compile Include="Analyzer.cs" />
     <Compile Include="FileStreamAnalyser.cs" />
     <Compile Include="FolderCheckSum.cs" />
+    <Compile Include="Results\FileResultError.cs" />
+    <Compile Include="Results\FileAnalyzeStatus.cs" />
     <Compile Include="Results\FileResult.cs" />
+    <Compile Include="Results\FileResultSuccess.cs" />
     <Compile Include="Results\FolderResult.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

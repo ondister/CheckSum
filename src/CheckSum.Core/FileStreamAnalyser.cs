@@ -1,36 +1,73 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using CheckSum.Core.Results;
 
 namespace CheckSum.Core
 {
     /// <inheritdoc />
     /// <summary>
-    /// Реализация анализа файла через побитовое чтение с использованием FileStream
-    /// Можно реализовать асинхронное чтение большого файла по частям, но мне кажется это не даст нужной производительности, а наоборот ее ухудшит
+    ///     Реализация анализа файла через побитовое чтение с использованием FileStream
+    ///     Можно реализовать асинхронное чтение большого файла по частям, но мне кажется это не даст нужной
+    ///     производительности, а наоборот ее ухудшит
     /// </summary>
     internal sealed class FileStreamAnalyser : Analyzer
     {
+        /// <summary>
+        ///     Считает сумму значений байт для указанного файла
+        /// </summary>
+        /// <param name="fileInfo">FileInfo файла</param>
+        /// <returns></returns>
         internal override FileResult AnalyzeFile(FileInfo fileInfo)
         {
             var checkSum = 0L;
-
-            using (var fileStream = fileInfo.OpenRead())
+            FileResult fileResult;
+            try
             {
-                var byteValue = 0;
-                do
+                using (var fileStream = fileInfo.OpenRead())
                 {
-                    byteValue = fileStream.ReadByte();
+                    var byteValue = 0;
+                    do
+                    {
+                        byteValue = fileStream.ReadByte();
 
-                    checkSum += byteValue;
-                } while (byteValue != -1);
+                        checkSum += byteValue;
+                    } while (byteValue != -1);
+                }
+
+                fileResult = new FileResultSuccess
+                {
+                    CheckSum = checkSum,
+                    FileName = fileInfo.FullName,
+                    Status = FileAnalyzeStatus.Success
+                };
             }
-
-
-            var fileResult = new FileResult
+            catch (IOException)
             {
-                CheckSum = checkSum,
-                FileName = fileInfo.FullName
-            };
+                fileResult = new FileResultError
+                {
+                    ErrorMessage = "Ошибка ввода вывода",
+                    FileName = fileInfo.FullName,
+                    Status=FileAnalyzeStatus.Error
+                };
+            }
+            catch (UnauthorizedAccessException)
+            {
+                fileResult = new FileResultError
+                {
+                    ErrorMessage = "Ошибка доступа к файлу",
+                    FileName = fileInfo.FullName,
+                    Status = FileAnalyzeStatus.Error
+                };
+            }
+            catch
+            {
+                fileResult = new FileResultError
+                {
+                    ErrorMessage = "Ошибка чтения потока",
+                    FileName = fileInfo.FullName,
+                    Status = FileAnalyzeStatus.Error
+                };
+            }
 
             return fileResult;
         }

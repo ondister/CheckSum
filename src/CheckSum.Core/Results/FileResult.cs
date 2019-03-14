@@ -4,13 +4,27 @@ using System.Xml.Serialization;
 namespace CheckSum.Core.Results
 {
     /// <summary>
-    /// Класс результата подсчета суммы байт файла
+    /// Базовый класс результата обработки файла
     /// </summary>
     [Serializable]
-    public class FileResult
+    [XmlInclude(typeof(FileResultSuccess))]
+    [XmlInclude(typeof(FileResultError))]
+    public abstract class FileResult
     {
-        [XmlAttribute("File_name")] public string FileName { get; set; }
+        /// <summary>
+        /// Статус обработки файла
+        /// </summary>
+        [XmlAttribute("Status")] public string Status { get; set; }
 
-        [XmlAttribute("Bytes_checksum")] public long CheckSum { get; set; }
+        /// <summary>
+        /// Полный путь к файлу
+        /// </summary>
+        [XmlAttribute("File_name")] public string FileName { get; set; }
+        
+        /// <summary>
+        /// Возвращает результат в виде строки
+        /// </summary>
+        /// <returns></returns>
+        public abstract string GetStringResult();
     }
 }

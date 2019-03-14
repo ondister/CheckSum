@@ -61,11 +61,6 @@ namespace CheckSum.WpfDemo
         public AsyncCommand AnalizeCommand { get; }
 
        
-        private void FolderCheckSum_Analized(object sender, EventArgs e)
-        {
-            AnalizeState = "Анализ завершен";
-        }
-
         public async Task AnalizeDirectory()
         {
             if (folderCheckSum != null)
@@ -87,6 +82,11 @@ namespace CheckSum.WpfDemo
                 }
             }
  
+        }
+
+        private void FolderCheckSum_Analized(object sender, string e)
+        {
+            AnalizeState = $"Анализ файла {e} завершен";
         }
 
         private void Progress_ProgressChanged(object sender, FileResult e)

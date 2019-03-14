@@ -32,7 +32,7 @@ namespace CheckSum.Core
         /// <summary>
         ///     Событие о том, что все файлы проверены
         /// </summary>
-        public event EventHandler Analized;
+        public event EventHandler<string> Analized;
 
         private Task GetFileInfos(DirectoryInfo directoryInfo)
         {
@@ -95,13 +95,13 @@ namespace CheckSum.Core
                         analyzeProgress.Report(endedTask.Result);
                     }
                 }
-
-
+                
                 var resultFullFileName =
                     $"{rootDirectoryInfo.FullName}{Path.DirectorySeparatorChar}{folderResultFileName}";
+
                 FolderResult.Save(resultFullFileName);
 
-                OnAnalized();
+                OnAnalized(resultFullFileName);
             }
             //Обработка ошибок не реализована в полной мере, так как я не знаю, какого паттерна обработки придерживаться.
             //Об это в задании ничего не написано
@@ -119,10 +119,7 @@ namespace CheckSum.Core
             }
         }
 
-        protected virtual void OnAnalized()
-        {
-            Analized?.Invoke(this, EventArgs.Empty);
-        }
+     
 
         #region Constructors
 
@@ -138,5 +135,10 @@ namespace CheckSum.Core
         }
 
         #endregion
+
+        protected virtual void OnAnalized(string e)
+        {
+            Analized?.Invoke(this, e);
+        }
     }
 }
