@@ -18,6 +18,7 @@
                 <TextBlock Text="{Binding Path=CheckSum}" Margin="2"></TextBlock>
             </StackPanel>
         </DataTemplate>
+
         <DataTemplate DataType="{x:Type results:FileResultError}">
             <StackPanel Orientation="Horizontal">
                 <TextBlock Text="{Binding Path=Status}" Margin="2"></TextBlock>
@@ -25,6 +26,13 @@
                 <TextBlock Text="{Binding Path=ErrorMessage}" Margin="2"></TextBlock>
             </StackPanel>
         </DataTemplate>
+
+        <DataTemplate DataType="{x:Type results:FileResultZeroSum}">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="{Binding Path=Status}" Margin="2"></TextBlock>
+                    <TextBlock Text="{Binding Path=FileName}" Margin="2"></TextBlock>
+            </StackPanel>
+            </DataTemplate>
     </Window.Resources>
 
     <Grid>

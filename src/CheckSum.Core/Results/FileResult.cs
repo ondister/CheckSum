@@ -9,6 +9,7 @@ namespace CheckSum.Core.Results
     [Serializable]
     [XmlInclude(typeof(FileResultSuccess))]
     [XmlInclude(typeof(FileResultError))]
+    [XmlInclude(typeof(FileResultZeroSum))]
     public abstract class FileResult
     {
         /// <summary>

@@ -19,6 +19,7 @@ namespace CheckSum.Core
         /// <returns></returns>
         internal override FileResult AnalyzeFile(FileInfo fileInfo)
         {
+            const int zeroFileLenghtCheckSum = -1;
             var checkSum = 0L;
             FileResult fileResult;
             try
@@ -34,11 +35,22 @@ namespace CheckSum.Core
                     } while (byteValue != -1);
                 }
 
-                fileResult = new FileResultSuccess
+                //если длина файла равна 0
+                if (checkSum == zeroFileLenghtCheckSum)
                 {
-                    CheckSum = checkSum,
-                    FileName = fileInfo.FullName
-                };
+                    fileResult = new FileResultZeroSum
+                    {
+                        FileName = fileInfo.FullName
+                    };
+                }
+                else
+                {
+                    fileResult = new FileResultSuccess
+                    {
+                        CheckSum = checkSum,
+                        FileName = fileInfo.FullName
+                    };
+                }
             }
             catch (IOException)
             {

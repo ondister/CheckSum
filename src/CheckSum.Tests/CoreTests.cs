@@ -72,8 +72,25 @@ namespace CheckSum.Tests
             await folderCheckSum.AnalizeAsync(progress);
 
             Assert.IsTrue(
-                folderCheckSum.FolderResult.FilesCollection.All(r => r.Status.Equals(FileAnalyzeStatus.Success)),
+                folderCheckSum.FolderResult.FilesCollection.All(r => r.Status!=FileAnalyzeStatus.Error),
                 "Не все файлы прверены успешно");
+        }
+
+        /// <summary>
+        ///     Правильно определяет файл с нулевым размером
+        /// </summary>
+        /// <returns></returns>
+        [TestMethod]
+        public async Task AnalizeZeroFileSizeTest()
+        {
+            var folderCheckSum = new FolderCheckSum(existFolderPath);
+            var progress = new Progress<FileResult>();
+
+            await folderCheckSum.AnalizeAsync(progress);
+
+            Assert.IsTrue(
+                folderCheckSum.FolderResult.FilesCollection.Any(r => r.Status.Equals(FileAnalyzeStatus.ZeroFile)),
+                "Файл с нулевым размером не определен");
         }
 
         [TestMethod]

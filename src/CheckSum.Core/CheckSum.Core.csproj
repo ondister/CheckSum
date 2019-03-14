@@ -48,6 +48,7 @@
     <Compile Include="Results\FileResultError.cs" />
     <Compile Include="Results\FileAnalyzeStatus.cs" />
     <Compile Include="Results\FileResult.cs" />
+    <Compile Include="Results\FileResultZeroSum.cs" />
     <Compile Include="Results\FileResultSuccess.cs" />
     <Compile Include="Results\FolderResult.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
