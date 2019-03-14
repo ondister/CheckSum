@@ -1,32 +1,37 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Text;
 using System.Threading.Tasks;
-using System.Windows.Data;
 using System.Windows.Forms;
-using System.Windows.Input;
-using System.Windows.Threading;
 using CheckSum.Core;
 using CheckSum.Core.Results;
 using CheckSum.WpfDemo.Annotations;
+using CheckSum.WpfDemo.Commands;
 using Application = System.Windows.Application;
 
 namespace CheckSum.WpfDemo
 {
-   public class DirectoryViewModel:INotifyPropertyChanged
+    /// <summary>
+    ///     Вью модель для FolderCheckSum
+    /// </summary>
+    public class DirectoryViewModel : INotifyPropertyChanged
     {
-        
+        private string analizeState = "Нажмите ... затем Начать анализ";
         private FolderCheckSum folderCheckSum;
-#warning не забыть сделать открытие папки
+        private string folderPath;
 
+        public DirectoryViewModel()
+        {
+            AnalizedFiles = new ObservableCollection<FileResult>();
 
-        private string analizeState="Нажмите выбрать папку. затем начать анализ";
-        public ObservableCollection<FileResult> AnalizedFiles { get; }
+            OpenDirectoryCommand = new SyncCommand(OpenDirectory);
+            AnalizeCommand = new AsyncCommand(async () => await AnalizeDirectory());
+        }
 
+        /// <summary>
+        ///     Строка состояния
+        /// </summary>
         public string AnalizeState
         {
             get => analizeState;
@@ -38,11 +43,47 @@ namespace CheckSum.WpfDemo
             }
         }
 
-        public DirectoryViewModel()
+        /// <summary>
+        ///     Путь для папки
+        /// </summary>
+        public string FolderPath
         {
-            AnalizedFiles=new ObservableCollection<FileResult>();
-            AnalizeCommand = new AsyncCommand(async () => await AnalizeDirectory());
-            OpenDirectoryCommand = new SyncCommand(OpenDirectory);
+            get => folderPath;
+            set
+            {
+                if (value == folderPath) return;
+                folderPath = value;
+                OnPropertyChanged();
+            }
+        }
+
+        
+        /// <summary>
+        ///     Проанализированные файлы
+        /// </summary>
+        public ObservableCollection<FileResult> AnalizedFiles { get; }
+
+        public async Task AnalizeDirectory()
+        {
+            try
+            {
+                folderCheckSum = new FolderCheckSum(FolderPath);
+
+                AnalizeState = "Производит анализ папки. Ждите...";
+
+                folderCheckSum.Analized += FolderCheckSum_Analized;
+
+                var progress = new Progress<FileResult>();
+                progress.ProgressChanged += Progress_ProgressChanged;
+
+
+                await folderCheckSum.AnalizeAsync(progress);
+            }
+            //Здесь, безусловно нужно сделать нормальную обработку ошибок
+            catch (Exception ex)
+            {
+                AnalizeState = ex.Message;
+            }
         }
 
         private void OpenDirectory(object obj)
@@ -50,49 +91,33 @@ namespace CheckSum.WpfDemo
             var openFolderDialog = new FolderBrowserDialog();
             if (openFolderDialog.ShowDialog() == DialogResult.OK)
             {
-                var dialogPath = openFolderDialog.SelectedPath;
-                folderCheckSum = new FolderCheckSum(dialogPath);
+                FolderPath = openFolderDialog.SelectedPath;
             }
-            
         }
 
-        public SyncCommand OpenDirectoryCommand { get;  }
-
-        public AsyncCommand AnalizeCommand { get; }
-
-       
-        public async Task AnalizeDirectory()
-        {
-            if (folderCheckSum != null)
-            {
-                AnalizeState = "Производит анализ папки. Ждите...";
-
-                folderCheckSum.Analized += FolderCheckSum_Analized;
-
-                var progress= new Progress<FileResult>();
-                progress.ProgressChanged += Progress_ProgressChanged;
-
-                try
-                {
-                    await folderCheckSum.AnalizeAsync(progress);
-                }
-                catch(Exception ex)
-                {
-                    AnalizeState = ex.Message;
-                }
-            }
- 
-        }
+        #region Обработка событий
 
         private void FolderCheckSum_Analized(object sender, string e)
         {
-            AnalizeState = $"Анализ файла {e} завершен";
+            AnalizeState = $"Анализ папки {e} завершен";
         }
 
         private void Progress_ProgressChanged(object sender, FileResult e)
         {
             Application.Current.Dispatcher.BeginInvoke(new Action(() => { AnalizedFiles.Add(e); }));
         }
+
+        #endregion
+
+        #region Команды
+
+        public SyncCommand OpenDirectoryCommand { get; }
+
+        public AsyncCommand AnalizeCommand { get; }
+
+        #endregion
+
+        #region INotifyPropertyChanged
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -101,5 +126,7 @@ namespace CheckSum.WpfDemo
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
+
+        #endregion
     }
 }

@@ -59,7 +59,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="SyncCommand.cs" />
+    <Compile Include="Commands\SyncCommand.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -68,10 +68,11 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="AsyncCommand.cs" />
-    <Compile Include="AsyncCommandBase.cs" />
+    <Compile Include="Commands\AsyncCommand.cs" />
+    <Compile Include="Commands\AsyncCommandBase.cs" />
+    <Compile Include="DirectoryValidationRule.cs" />
     <Compile Include="DirectoryViewModel.cs" />
-    <Compile Include="IAsyncCommand.cs" />
+    <Compile Include="Commands\IAsyncCommand.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
