@@ -45,7 +45,11 @@ namespace CheckSum.Core
             {
                 foreach (var fileInfo in directoryInfo.EnumerateFiles())
                 {
-                    fileInfos.Add(fileInfo);
+                    //Костыль, по сути для перехвата слишком длинного пути. Нужно хорошо подумать, что с этим делать
+                    if (!PathTooLong(fileInfo))
+                    {
+                        fileInfos.Add(fileInfo);
+                    }
                 }
 
                 foreach (var directory in directoryInfo.EnumerateDirectories())
@@ -53,6 +57,20 @@ namespace CheckSum.Core
                     await GetFileInfos(directory);
                 }
             });
+        }
+
+        private static bool PathTooLong(FileSystemInfo fileInfo)
+        {
+            try
+            {
+              var fileName=  fileInfo.FullName;
+                return false;
+            }
+            catch(PathTooLongException)
+            {
+                return true;
+            }
+
         }
 
         /// <summary>
