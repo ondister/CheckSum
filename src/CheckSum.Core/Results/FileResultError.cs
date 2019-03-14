@@ -15,5 +15,10 @@ namespace CheckSum.Core.Results
         {
             return $"Error of the file {FileName} analis: {ErrorMessage}";
         }
+
+        public FileResultError()
+        {
+            Status = FileAnalyzeStatus.Error;
+        }
     }
 }

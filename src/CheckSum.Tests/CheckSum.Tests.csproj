@@ -61,6 +61,10 @@
       <Project>{D3C19301-9EA8-4BBC-AF5D-E166B3368AAC}</Project>
       <Name>CheckSum.Core</Name>
     </ProjectReference>
+    <ProjectReference Include="..\CheckSum.WpfDemo\CheckSum.WpfDemo.csproj">
+      <Project>{5cd0ef3d-d55c-454e-a8cc-e45e61eab712}</Project>
+      <Name>CheckSum.WpfDemo</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
