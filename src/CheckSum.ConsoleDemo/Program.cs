@@ -5,6 +5,10 @@ using CheckSum.Core.Results;
 
 namespace CheckSum.ConsoleDemo
 {
+    /// <summary>
+    /// Консольное демо для CheckSum.Core
+    /// Путь к папке задается через аргументы, например CheckSum.ConsoleDemo.exe d:\develop\CheckSum\DEBUG\ConsoleDemo
+    /// </summary>
     internal class Program
     {
         private const string testFolderPath = @"..\..\TestFiles";

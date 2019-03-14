@@ -118,9 +118,7 @@ namespace CheckSum.Core
                 throw ex;
             }
         }
-
-     
-
+        
         #region Constructors
 
         private FolderCheckSum(DirectoryInfo rootDirectoryInfo)

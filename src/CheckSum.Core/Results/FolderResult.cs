@@ -6,7 +6,7 @@ using System.Xml.Serialization;
 namespace CheckSum.Core.Results
 {
     /// <summary>
-    /// Класс результата обработки дерева папок
+    ///     Класс результата обработки дерева папок
     /// </summary>
     [Serializable]
     public class FolderResult
@@ -18,11 +18,15 @@ namespace CheckSum.Core.Results
 
         [XmlElement("Files")] public Collection<FileResult> FilesCollection { get; set; }
 
-        internal void Save(string path)
+        /// <summary>
+        ///     Cохраняет результат по указанному пути
+        /// </summary>
+        /// <param name="fileName">Полный путь для сохранения файла</param>
+        internal void Save(string fileName)
         {
             var formatter = new XmlSerializer(typeof(FolderResult));
 
-            using (var fileStream = new FileStream(path, FileMode.Create))
+            using (var fileStream = new FileStream(fileName, FileMode.Create))
             {
                 formatter.Serialize(fileStream, this);
             }
