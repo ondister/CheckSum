@@ -17,6 +17,8 @@ namespace CheckSum.Tests
     {
         private const string existFolderPath = @"..\..\TestFiles";
         private const string notExistFolderPath = @"D:\notExistFolder";
+        private const string zeroSizeFileName = "ZeroSizeFile.txt";
+        private const string size200FileName = "200SizeFile.txt";
 
         [TestMethod]
         public async Task AnalizeSmokeTest()
@@ -39,6 +41,32 @@ namespace CheckSum.Tests
             Assert.IsTrue(new FileInfo(xmlFileName).Exists);
         }
 
+        /// <summary>
+        /// Тест для определения правильности подсчета суммы байт файлов
+        /// </summary>
+        /// <returns></returns>
+        [TestMethod]
+        public async Task FileSizeTest()
+        {
+            var zeroSizeFilePath = new FileInfo($"{existFolderPath}{Path.DirectorySeparatorChar}{zeroSizeFileName}").FullName;
+            var size200FileSizePath = new FileInfo($"{existFolderPath}{Path.DirectorySeparatorChar}{size200FileName}").FullName;
+            const long filesize200 = 200L;
+
+            var folderCheckSum = new FolderCheckSum(existFolderPath);
+            var progress = new Progress<FileResult>();
+
+            await folderCheckSum.AnalizeAsync(progress);
+
+            var fileResults = folderCheckSum.FolderResult.FilesCollection;
+
+            var zeroSiseResult = fileResults.FirstOrDefault(r => r.FileName.Equals(zeroSizeFilePath));
+            Assert.IsNotNull(zeroSiseResult,"Файл с нулевой суммой не найден в результатах");
+            Assert.AreEqual(FileAnalyzeStatus.ZeroFile,zeroSiseResult.Status,"Сумма байт файла с нулевым размером не равна нулю");
+
+            var size200Result= fileResults.FirstOrDefault(r => r.FileName.Equals(size200FileSizePath)) as FileResultSuccess ;
+            Assert.IsNotNull(size200Result,"");
+            Assert.AreEqual(filesize200, size200Result.CheckSum,$"Суммма байт файла не равна {filesize200}");
+        }
 
         /// <summary>
         ///     Определяет, для всех ли файлов сгенерирован прогресс
